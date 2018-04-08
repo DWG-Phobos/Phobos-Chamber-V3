@@ -42,7 +42,7 @@
 			
 			var loader = new THREE.ColladaLoader( loadingManager );
 			loader.options.convertUpAxis = true;
-			loader.load( 'models/stormtrooper.dae', function ( collada ) {
+			loader.load( 'models/trooper/stormtrooper.dae', function ( collada ) {
 			
 				player = collada.scene;
 				player.rotation.x = 0;
@@ -92,19 +92,19 @@
 				var largeCube = new THREE.Mesh( largeCubeGeometry, material ); //Crear objecte
 				var cube = new THREE.Mesh( cubeGeometry, material ); //Crear objecte
 				var tallCube = new THREE.Mesh( tallCubeGeometry, material ); //Crear objecte
-				var giantCube = new THREE.Mesh( giantGeometry, material ); //Crear objecte
+				//var giantCube = new THREE.Mesh( giantGeometry, material ); //Crear objecte
 
 				//Cubes values
 				cube.position.set(0, 5, 0.5);
 				tallCube.position.set(0, 2, 1.5);
 				largeCube.position.set(0, 10, 0.5);
-				giantCube.position.set(2.5, 0, 5);
+				//giantCube.position.set(2.5, 0, 5);
 				
 				//Adding Cubes to the Mesh
 				mesh.add(cube);
 				mesh.add(largeCube);
 				mesh.add(tallCube);
-				mesh.add(giantCube);
+				//mesh.add(giantCube);
 
 				//Creating Triangles
 				var geometry = new THREE.Geometry();
