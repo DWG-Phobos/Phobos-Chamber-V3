@@ -1,22 +1,7 @@
-## Boilerplate for three.js on desktop and mobile
+## Project Phobos
 
-Here is a boilerplate for three.js. It is working on desktop and on mobile. 
-this include android and ios.
+Project Phobos is the fist attempt of UDG students Marc Molas, Gerard Barragan and Jaume Ramos at making a videogame using 3js.
 
-Try out the [boilerplate for three.js](http://jeromeetienne.github.io/threejsboilerplate/index.html) or look at [its source](https://github.com/jeromeetienne/threejsboilerplate/blob/master/index.html).
+The game will be about escaping from an unknown location whil avoiding being caught by a dangerous hazard which would anhialate the player inmediately
 
-
-## [DEMO](http://jeromeetienne.github.io/threejsboilerplate/index.html)
-
-## A Screenshot
-[![screenshot](https://cloud.githubusercontent.com/assets/252962/4397369/9f9c844c-4441-11e4-9bd1-daa99a79a4d0.jpg)](http://jeromeetienne.github.io/threejsboilerplate/index.html)
-
-## Variants
-
-
-* If you like [require.js](http://requirejs.org/), here is a [boilerplate variant with require.js](http://jeromeetienne.github.io/threejsboilerplate/boilerplate-requirejs.html) - [source](https://github.com/jeromeetienne/threejsboilerplate/blob/master/boilerplate-requirejs.html).
-
-## License
-Released under [MIT license](https://github.com/jeromeetienne/threejsboilerplate/blob/master/LICENSE)
-
-Hello world que honda axio es un prova
+This project will most likely end being a bad game, but we will try our best to avoid it with all out might!
