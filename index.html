@@ -26,7 +26,7 @@
 			
 
 			//Controls: uncoment to freely navigate the zone
-			//var controls	= new THREE.OrbitControls(camera);
+			//var controls = new THREE.OrbitControls(camera);
 
 			//Charge Model
 			var loadingManager = new THREE.LoadingManager( function() {
@@ -37,7 +37,7 @@
 			
 			var loader = new THREE.ColladaLoader( loadingManager );
 			loader.options.convertUpAxis = true;
-			loader.load( 'models/trooper/stormtrooper.dae', function ( collada ) {
+			loader.load( 'models/Hero_V2/Hero_V2.dae', function ( collada ) {
 			
 				player = collada.scene;
 				player.rotation.x = 0;
