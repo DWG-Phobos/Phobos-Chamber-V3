@@ -10,41 +10,43 @@
 		<script src="js/three.js"></script>
 		<script src='js/OrbitControls.js'></script>
 		<script src='js/ColladaLoader.js'></script>
+		<script src='js/jquery-1.10.2.min.js'></script>
+		<script src='js/keyboard.js'></script>
 		<script>
 			
 			var scene = new THREE.Scene(); // Escena
 						
-			var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.5, 1000 );
-            camera.position.z = 6;
-			camera.position.y = -8.5;
-            camera.rotation.x = 75 * Math.PI / 180;
-		
+			var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.5, 1000 );	
+			camera.rotation.y = 180 * Math.PI / 180;
+			camera.rotation.x = 25 * Math.PI / 180;
 
+			
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );	// Tamany de la pantalla de renderitzat
 			document.body.appendChild( renderer.domElement );	// Coloquem el render al document web
 			
 
-			//Controls: uncoment to freely navigate the zone
+			//Free camera: uncoment to freely navigate the zone
 			//var controls = new THREE.OrbitControls(camera);
 
 			//Charge Model
 			var loadingManager = new THREE.LoadingManager( function() {
 
 			scene.add( player );
-
+			
 			} );
 			
 			var loader = new THREE.ColladaLoader( loadingManager );
 			var clock = new THREE.Clock(),
 			mixer;
+			var keyboard = new THREEx.KeyboardState();
 
 			loader.options.convertUpAxis = true;
 			loader.load( 'models/Hero_alter/Hero.dae', function ( collada ) {
 				
 				player = collada.scene;
-				player.rotation.x = 1.5;
 				player.scale.set(0.03,0.03,0.03);
+				player.rotation.y = 180 * Math.PI / 180;
 				
 				var sceneAnimationClip = collada.animations[0];
 				
@@ -52,18 +54,6 @@
 				
 				var sceneAnimation = mixer.clipAction(sceneAnimationClip);
 				sceneAnimation.play();
-				
-/*
-				
-				var modelMesh = collada.scene;
-				modelMesh.traverse( function (child) {
-				if (child instanceof THREE.SkinnedMesh) {
-					var animation = new THREE.Animation(child,
-					child.geometry.animation);
-					animation.play();
-					}
-				});
-*/
 			} );
 			
 			var ambientLight = new THREE.AmbientLight( 0xffffff, 0.5 );
@@ -115,19 +105,19 @@
 				var platform2 = new THREE.Mesh( platformGeometry, materialAlternatiu);
 				var step1 = new THREE.Mesh(halfGiantGeometry, materialAlternatiu);
 				//Cubes values
-				cube1.position.set(-0.5, 30, 2.5);
-				cube2.position.set(-2, 31, 0.5);
-				tallCube.position.set(0.5, 30, 3);
-				largeCube1.position.set(-5, 10, 1);
-				largeCube2.position.set(-7.5, 20, 1);
-				largeCube3.position.set(-1.5, 30, 1);
-				largeCube4.position.set(-5, 40, 1);
-				largeCube5.position.set(-7.5, 50, 1);
-				giantCube.position.set(5.5, 11, 2.5);
-				giantCube2.position.set(5.5, 30, 2.5);
-				platform.position.set(2, 19, 4.5);
-				platform2.position.set(5, 22, 4.5);
-				step1.position.set(5.5,37.5, 1.2)
+				cube1.position.set(-0.5, 2.5, 30);
+				cube2.position.set(-2, 0.5, 31);
+				tallCube.position.set(0.5, 3, 30);
+				largeCube1.position.set(-5, 1, 10);
+				largeCube2.position.set(-7.5, 1, 20);
+				largeCube3.position.set(-1.5, 1, 30);
+				largeCube4.position.set(-5, 1, 40);
+				largeCube5.position.set(-7.5, 1, 50);
+				giantCube.position.set(5.5, 2.5, 11);
+				giantCube2.position.set(5.5, 2.5, 30);
+				platform.position.set(2, 4.5, 19);
+				platform2.position.set(5, 4.5, 22);
+				step1.position.set(5.5, 1.2, 37.5)
 				//Adding Cubes to the Mesh
 				mesh.add(cube1);
 				mesh.add(cube2);
@@ -187,16 +177,16 @@
 
 				//Right Wall Values
 				rightWall.position.x = 10;
-				rightWall.position.y = 30;
-				rightWall.position.z = 5;
+				rightWall.position.y = 5;
+				rightWall.position.z = 30;
 				
 				rightWall.rotation.y = -Math.PI / 2;
 
 				//Left Wall Values
 
 				leftWall.position.x = -10;
-				leftWall.position.y = 30;
-				leftWall.position.z = 5;
+				leftWall.position.y = 5;
+				leftWall.position.z = 30;
 
 				leftWall.rotation.y = Math.PI / 2;
 
@@ -218,10 +208,10 @@
                 var answerBoxC = new THREE.Mesh( answerBoxGeometry, materialC);
                 var answerBoxD = new THREE.Mesh( answerBoxGeometry, materialD);
 
-                answerBoxA.position.set(-7.5, 60, 0.25);
-                answerBoxB.position.set(-2.5, 60, 0.25);
-                answerBoxC.position.set(2.5, 60, 0.25);
-                answerBoxD.position.set(7.5, 60, 0.25);
+                answerBoxA.position.set(-7.5, 0.25, 60);
+                answerBoxB.position.set(-2.5, 0.25, 60);
+                answerBoxC.position.set(2.5, 0.25, 60);
+                answerBoxD.position.set(7.5, 0.25, 60);
 
                 mesh.add(answerBoxA);
                 mesh.add(answerBoxB);
@@ -232,19 +222,49 @@
 			//Adding all objects to the Scene
 			scene.add(mesh);
 
-
 			//Function that renders the scene
 			var animate = function () {
 
 				requestAnimationFrame( animate );
-				
-				var delta = clock.getDelta();
-				if( mixer ) {
-					mixer.update( delta );
-				}
-				
+				update();
+
 				renderer.render(scene, camera);
 			};
+			
+			function update(  )
+			{
+			// delta = change in time since last call (seconds)
+			var delta = clock.getDelta();
+			var moveDistance = 10 * delta;
+			walking = false;
+			
+			// move forwards / backwards
+			if ( keyboard.pressed("down") )
+				player.translateZ( moveDistance );
+			if ( keyboard.pressed("up") )
+				player.translateZ( -moveDistance );
+			// rotate left/right
+			if ( keyboard.pressed("left") )
+				player.rotation.y += delta;
+			if ( keyboard.pressed("right") )
+				player.rotation.y -= delta;
+			
+			
+			var walkingKeys = ["up", "down", "left", "right"];
+			for (var i = 0; i < walkingKeys.length; i++)
+			{
+				if ( keyboard.pressed(walkingKeys[i]) )
+					walking = true;
+			}
+			
+			camera.position.set(0,
+				player.position.y + 11,
+				player.position.z - 13);
+				
+			if( mixer ) {
+				mixer.update( delta );
+			}
+		}
 			
 			animate();
 
