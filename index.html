@@ -19,6 +19,8 @@
 			var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.5, 1000 );	
 			camera.rotation.y = 180 * Math.PI / 180;
 			camera.rotation.x = 25 * Math.PI / 180;
+			//camera.position.z = 50;
+			//camera.position.y = 10.5;
 
 			
 			var renderer = new THREE.WebGLRenderer();
@@ -76,22 +78,87 @@
             scene.add( lightX );
 			
 			mesh = new THREE.Object3D();
-	
+			
 			//Creating Obstacles
 
 				//Creating Cubes
-				var largeCubeGeometry = new THREE.BoxGeometry( 5, 1, 2 ); //Crear Geometria
-				var halfGiantGeometry = new THREE.BoxGeometry(9, 5, 2.5);
+				var largeCubeGeometry = new THREE.BoxGeometry( 5, 2, 1 ); //Crear Geometria
+				var halfGiantGeometry = new THREE.BoxGeometry(9, 2.5, 5);
 				var cubeGeometry = new THREE.BoxGeometry( 1, 1, 1 ); //Crear Geometria
-				var tallCubeGeometry = new THREE.BoxGeometry( 1, 1, 2 ); //Crear Geometria
-				var giantGeometry = new THREE.BoxGeometry(9,10,5);
-				var platformGeometry = new THREE.BoxGeometry(2,2,1);
+				var tallCubeGeometry = new THREE.BoxGeometry( 1, 2, 1 ); //Crear Geometria
+				var giantGeometry = new THREE.BoxGeometry(9,5,10);
+				var platformGeometry = new THREE.BoxGeometry(2,1,2);
 				
 
-				var material = new THREE.MeshBasicMaterial( { color: "gray" } ); //Crear color
-				var materialAlternatiu = new THREE.MeshBasicMaterial( { color: 0xFF7C00 } ); //Crear color
+				var texture2 = THREE.ImageUtils.loadTexture('metal_floor.jpg');
+				texture2.wrapS = THREE.RepeatWrapping;
+				texture2.wrapT = THREE.RepeatWrapping;
+				texture2.repeat.set(1, 1);
+				var material2 = new THREE.MeshBasicMaterial({map: texture2});
+
+
+			
+				//LARGE CUBE TEXTURE CREATION
 				
-				var largeCube1 = new THREE.Mesh( largeCubeGeometry, material ); //Crear objecte
+				var cubeTextures = [
+
+					THREE.ImageUtils.loadTexture('hazard.jpeg'), //RIGHT SIDE
+					THREE.ImageUtils.loadTexture('hazard.jpeg'), //LEFT SIDE
+					THREE.ImageUtils.loadTexture('hazard.jpeg'), //TOP SIDE
+					THREE.ImageUtils.loadTexture('hazard.jpeg'), //BOTTOM SIDE
+					THREE.ImageUtils.loadTexture('hazard.jpeg'), //FRONT SIDE
+					THREE.ImageUtils.loadTexture('hazard.jpeg') //BACK SIDE
+				];
+
+				
+				var cubeFacesSizes = [
+
+					[1,2],
+					[1,3],
+					[1,5],
+					[1,6],
+					[1,1],
+					[0.5,0.5]
+				];
+
+				for (i = 0; i < cubeFacesSizes.length; i++) { 
+    				
+    				cubeTextures[i].wrapS = THREE.RepeatWrapping;
+					cubeTextures[i].wrapT = THREE.RepeatWrapping;
+					cubeTextures[i].repeat.set(cubeFacesSizes[i][0],cubeFacesSizes[i][1]);
+					
+				} 
+
+				//MATERIAL CREATION
+				
+				var cubeMaterials = [
+			       new THREE.MeshBasicMaterial({
+			           map: cubeTextures[0]
+			       }),
+			       new THREE.MeshBasicMaterial({
+			           map: cubeTextures[1]
+			       }),
+			       new THREE.MeshBasicMaterial({
+			           map: cubeTextures[2]
+			       }),
+			       new THREE.MeshBasicMaterial({
+			           map: cubeTextures[3]
+			       }),
+			       new THREE.MeshBasicMaterial({
+			           map: cubeTextures[4]
+			       }),
+			       new THREE.MeshBasicMaterial({
+			           map: cubeTextures[5]
+			       })
+			    ];
+			 
+				var texture = THREE.ImageUtils.loadTexture('hazard.jpeg');
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.wrapT = THREE.RepeatWrapping;
+				texture.repeat.set(1, 1);
+				var material = new THREE.MeshBasicMaterial({map: texture});
+
+				var largeCube1 = new THREE.Mesh( largeCubeGeometry, cubeMaterials ); //Crear objecte
 				var largeCube2 = new THREE.Mesh( largeCubeGeometry, material ); //Crear objecte
 				var largeCube3 = new THREE.Mesh( largeCubeGeometry, material ); //Crear objecte
 				var largeCube4 = new THREE.Mesh( largeCubeGeometry, material ); //Crear objecte
@@ -101,23 +168,23 @@
 				var tallCube = new THREE.Mesh( tallCubeGeometry, material ); //Crear objecte
 				var giantCube = new THREE.Mesh( giantGeometry, material ); //Crear objecte
 				var giantCube2 = new THREE.Mesh( giantGeometry, material ); //Crear objecte
-				var platform = new THREE.Mesh( platformGeometry, materialAlternatiu);
-				var platform2 = new THREE.Mesh( platformGeometry, materialAlternatiu);
-				var step1 = new THREE.Mesh(halfGiantGeometry, materialAlternatiu);
+				var platform = new THREE.Mesh( platformGeometry, material);
+				var platform2 = new THREE.Mesh( platformGeometry, material);
+				var step1 = new THREE.Mesh( halfGiantGeometry, material );
 				//Cubes values
-				cube1.position.set(-0.5, 2.5, 30);
-				cube2.position.set(-2, 0.5, 31);
-				tallCube.position.set(0.5, 3, 30);
-				largeCube1.position.set(-5, 1, 10);
-				largeCube2.position.set(-7.5, 1, 20);
-				largeCube3.position.set(-1.5, 1, 30);
-				largeCube4.position.set(-5, 1, 40);
-				largeCube5.position.set(-7.5, 1, 50);
-				giantCube.position.set(5.5, 2.5, 11);
-				giantCube2.position.set(5.5, 2.5, 30);
-				platform.position.set(2, 4.5, 19);
-				platform2.position.set(5, 4.5, 22);
-				step1.position.set(5.5, 1.2, 37.5)
+				cube1.position.set(-0.5, 2.5, -30);
+				cube2.position.set(-2, 0.5, -31);
+				tallCube.position.set(0.5, 3, -30);
+				largeCube1.position.set(-5, 1, -10);
+				largeCube2.position.set(-7.5, 1, -20);
+				largeCube3.position.set(-1.5, 1, -30);
+				largeCube4.position.set(-5, 1, -40);
+				largeCube5.position.set(-7.5, 1, -50);
+				giantCube.position.set(5.5, 2.5, -11);
+				giantCube2.position.set(5.5, 2.5, -30);
+				platform.position.set(2, 4.5, -19);
+				platform2.position.set(5, 4.5, -22);
+				step1.position.set(5.5, 1.2, -37.5)
 				//Adding Cubes to the Mesh
 				mesh.add(cube1);
 				mesh.add(cube2);
@@ -132,86 +199,136 @@
 				mesh.add(platform);
 				mesh.add(platform2);
 				mesh.add(step1);
+				
 				//Creating Triangles
 				var geometry = new THREE.Geometry();
 
 			    geometry.vertices = [
-			        new THREE.Vector3( 1, 1, 0 ),
-			        new THREE.Vector3( 10, 1, 0 ),
-			        new THREE.Vector3( 1, 6, 0 ),
-			        new THREE.Vector3( 10, 6, 0 ),
-			        new THREE.Vector3( 1, 6, 5 ),
-			        new THREE.Vector3( 10, 6, 5 )
+			        new THREE.Vector3( 1, 0, -1 ),
+			        new THREE.Vector3( 10, 0, -1 ),
+			        new THREE.Vector3( 1, 0, -6 ),
+			        new THREE.Vector3( 10, 0, -6 ),
+			        new THREE.Vector3( 1, 5, -6 ),
+			        new THREE.Vector3( 10, 5, -6 )
 			    ];
 			    
 			    geometry.faces = [
-			        new THREE.Face3( 2, 1, 0),
-			        new THREE.Face3( 1, 2, 3),
-			        new THREE.Face3( 4, 2, 0),
-			        new THREE.Face3( 1, 3, 5),
-			        new THREE.Face3( 0, 1, 4 ),
-			        new THREE.Face3( 5, 4, 1),
-			        new THREE.Face3( 2, 4, 5,),
-			        new THREE.Face3( 5, 3, 2,)
+			        new THREE.Face3( 1, 0, 2),
+			        new THREE.Face3( 2, 3, 1),
+			        new THREE.Face3( 2, 0, 4),
+			        new THREE.Face3( 3, 5, 1),
+			        new THREE.Face3( 1, 4, 0),
+			        new THREE.Face3( 4, 1, 5),
+			        new THREE.Face3( 5, 5, 2,),
+			        new THREE.Face3( 3, 2, 5,)
 			    ];
 				
-			    var triangle = new THREE.Mesh( geometry, material );
+			    var triangle = new THREE.Mesh( geometry, material);
 			    mesh.add(triangle);
-
+			
 			//Creating World	
 
 				//Creating the ground
-				var groundGeometry = new THREE.PlaneGeometry(20, 100);
+				var groundGeometry = new THREE.PlaneGeometry(20, 800);
+				var roofGeometry = new THREE.PlaneGeometry(20, 800);
 				var material1 = new THREE.MeshBasicMaterial( { color: "red" } ); //Crear color
-				var materialGround = new THREE.MeshBasicMaterial( {color: 0xaa3f39});
+
+				//var materialGround = new THREE.MeshBasicMaterial( {color: 0xaa3f39});
+
+				var groundTexture = THREE.ImageUtils.loadTexture('neon_floor.jpg');
+
+				groundTexture.wrapS = THREE.RepeatWrapping;
+				groundTexture.wrapT = THREE.RepeatWrapping;
+				groundTexture.repeat.set(1, 40);
+				var materialGround = new THREE.MeshBasicMaterial({map: groundTexture});
+
+				var roofTexture = THREE.ImageUtils.loadTexture('metal.jpg');
+
+				roofTexture.wrapS = THREE.RepeatWrapping;
+				roofTexture.wrapT = THREE.RepeatWrapping;
+				roofTexture.repeat.set(1, 40);
+				var materialRoof = new THREE.MeshBasicMaterial({map: roofTexture});
+
 				var ground = new THREE.Mesh(groundGeometry, materialGround);
+				var roof = new THREE.Mesh(roofGeometry, materialRoof);
 
 				//Creating the walls
-				var wallGeometry = new THREE.PlaneGeometry(10, 100);
-				var wallMaterial = new THREE.MeshBasicMaterial( { color: "blue" } ); //Crear color
+				var wallGeometry = new THREE.PlaneGeometry(800, 20);
+				
+				//var wallMaterial = new THREE.MeshBasicMaterial( { color: "blue" } ); //Crear color
+
+				var wallTexture = THREE.ImageUtils.loadTexture('metal.jpg');
+				wallTexture.wrapS = THREE.RepeatWrapping;
+				wallTexture.wrapT = THREE.RepeatWrapping;
+				wallTexture.repeat.set(20, 1);
+        		var wallMaterial = new THREE.MeshBasicMaterial({map: wallTexture});
+
 				var rightWall = new THREE.Mesh(wallGeometry, wallMaterial);
 				var leftWall = new THREE.Mesh(wallGeometry, wallMaterial);
-
+				
 				//Ground values
-				ground.position.y = 30;
+				//ground.position.y = 30;
+				ground.rotation.x = -Math.PI / 2;
+				roof.rotation.x = Math.PI / 2;
+				roof.position.y = 20;
 
 				//Right Wall Values
 				rightWall.position.x = 10;
-				rightWall.position.y = 5;
-				rightWall.position.z = 30;
+				rightWall.position.y = 10;
+				rightWall.position.z = 5;
 				
 				rightWall.rotation.y = -Math.PI / 2;
 
 				//Left Wall Values
 
 				leftWall.position.x = -10;
-				leftWall.position.y = 5;
-				leftWall.position.z = 30;
+				leftWall.position.y = 10;
+				leftWall.position.z = 5;
 
 				leftWall.rotation.y = Math.PI / 2;
 
-				//Adding Walls and Ground to the Mesh
+				mesh.add(roof);
 				mesh.add(ground);
 				mesh.add(leftWall);
 				mesh.add(rightWall);
-
+				
 			//Create answers
-                var answerBoxGeometry = new THREE.BoxGeometry(5,5,0.5);
+                var answerBoxGeometry = new THREE.BoxGeometry(5,0.5,5);
 
-                var materialA = new THREE.MeshBasicMaterial( { color: "green" } ); //Crear color
-                var materialB = new THREE.MeshBasicMaterial( { color: "yellow" } ); //Crear color
-                var materialC = new THREE.MeshBasicMaterial( { color: "blue" } ); //Crear color
-                var materialD = new THREE.MeshBasicMaterial( { color: "red" } ); //Crear color
+                var textureA = THREE.ImageUtils.loadTexture('1.jpg');
+				textureA.wrapS = THREE.RepeatWrapping;
+				textureA.wrapT = THREE.RepeatWrapping;
+				textureA.repeat.set(1, 1);
+
+				var textureB = THREE.ImageUtils.loadTexture('2.jpg');
+				textureB.wrapS = THREE.RepeatWrapping;
+				textureB.wrapT = THREE.RepeatWrapping;
+				textureB.repeat.set(1, 1);
+
+				var textureC = THREE.ImageUtils.loadTexture('3.jpg');
+				textureC.wrapS = THREE.RepeatWrapping;
+				textureC.wrapT = THREE.RepeatWrapping;
+				textureC.repeat.set(1, 1);
+
+				var textureD = THREE.ImageUtils.loadTexture('4.jpg');
+				textureD.wrapS = THREE.RepeatWrapping;
+				textureD.wrapT = THREE.RepeatWrapping;
+				textureD.repeat.set(1, 1);
+
+                var materialA = new THREE.MeshBasicMaterial( { map: textureA } ); //Crear color
+                var materialB = new THREE.MeshBasicMaterial( { map: textureB } ); //Crear color
+                var materialC = new THREE.MeshBasicMaterial( { map: textureC } ); //Crear color
+                var materialD = new THREE.MeshBasicMaterial( { map: textureD } ); //Crear color
 
                 var answerBoxA = new THREE.Mesh( answerBoxGeometry, materialA);
                 var answerBoxB = new THREE.Mesh( answerBoxGeometry, materialB);
                 var answerBoxC = new THREE.Mesh( answerBoxGeometry, materialC);
                 var answerBoxD = new THREE.Mesh( answerBoxGeometry, materialD);
 
-                answerBoxA.position.set(-7.5, 0.25, 60);
-                answerBoxB.position.set(-2.5, 0.25, 60);
-                answerBoxC.position.set(2.5, 0.25, 60);
-                answerBoxD.position.set(7.5, 0.25, 60);
+                answerBoxA.position.set(-7.5, 0.25, -60);
+                answerBoxB.position.set(-2.5, 0.25, -60);
+                answerBoxC.position.set(2.5, 0.25, -60);
+                answerBoxD.position.set(7.5, 0.25, -60);
 
                 mesh.add(answerBoxA);
                 mesh.add(answerBoxB);
@@ -260,7 +377,7 @@
 			camera.position.set(0,
 				player.position.y + 11,
 				player.position.z - 13);
-				
+			
 			if( mixer ) {
 				mixer.update( delta );
 			}
