@@ -72,8 +72,9 @@
 			var lightX = new THREE.PointLight( 0x00ff00, 0.7, 15 );
             lightX.position.set( 0, 0, 0 );
             scene.add( lightX );
-			
-			mesh = new THREE.Object3D();
+
+
+			var mesh = new THREE.Object3D();
 			
 			//Creating Obstacles
 
@@ -182,19 +183,6 @@
 				platform2.position.set(5, 4.5, -22);
 				step1.position.set(5.5, 1.2, -37.5)
 				//Adding Cubes to the Mesh
-				mesh.add(cube1);
-				mesh.add(cube2);
-				mesh.add(largeCube1);
-				mesh.add(largeCube2);
-				mesh.add(largeCube3);
-				mesh.add(largeCube4);
-				mesh.add(largeCube5);
-				mesh.add(tallCube);
-				mesh.add(giantCube);
-				mesh.add(giantCube2);
-				mesh.add(platform);
-				mesh.add(platform2);
-				mesh.add(step1);
 				
 				//Creating Triangles
 				var geometry = new THREE.Geometry();
@@ -285,8 +273,30 @@
 
 				mesh.add(roof);
 				mesh.add(ground);
-				mesh.add(leftWall);
-				mesh.add(rightWall);
+
+				var obstacles = [
+					cube1,
+					cube2,
+					largeCube1,
+					largeCube2,
+					largeCube3,
+					largeCube4,
+					largeCube5,
+					tallCube,
+					giantCube,
+					giantCube2,
+					platform,
+					platform2,
+					step1,
+					leftWall,
+					rightWall
+
+                ]
+
+                for (i = 0; i < obstacles.length; i += 1) {
+		           
+		            mesh.add(obstacles[i]);
+		        }
 				
 			//Create answers
                 var answerBoxGeometry = new THREE.BoxGeometry(5,0.5,5);
@@ -343,32 +353,66 @@
 
 				renderer.render(scene, camera);
 			};
-			
-			function update(  )
+
+			//Col·lisions **********************************
+			var caster = new THREE.Raycaster();
+			var dummy = new THREE.Object3D();
+			var distance = 3;
+
+			function update()
 			{
 			// delta = change in time since last call (seconds)
 			var delta = clock.getDelta();
 			var moveDistance = 10 * delta;
 			walking = false;
+
+			//Detector de col·lisions ***************************************************************************************************************
+			dummy.position.x = player.position.x
+			dummy.position.y = player.position.y
+			dummy.position.z = player.position.z
 			
-			// move forwards / backwards
+			dummy.rotation.x = player.rotation.x
+			dummy.rotation.y = player.rotation.y
+			dummy.rotation.z = player.rotation.z
+			
 			if ( keyboard.pressed("down") )
-				player.translateZ( moveDistance );
+				dummy.translateZ( moveDistance )
 			if ( keyboard.pressed("up") )
-				player.translateZ( -moveDistance );
-			// rotate left/right
-			if ( keyboard.pressed("left") )
+				dummy.translateZ( -moveDistance );
+			
+			direccio = new  THREE.Vector3(dummy.position.x, dummy.position.y, dummy.position.z)
+			
+            caster.set(dummy.position, direccio);
+            var collisions = caster.intersectObjects(obstacles);
+           
+            if (!(collisions.length > 0 && collisions[0].distance <= distance)) {
+			
+				if ( keyboard.pressed("down") )
+					player.translateZ( moveDistance )
+				if ( keyboard.pressed("up") )
+					player.translateZ( -moveDistance );
+
+	        }
+;
+			
+
+			
+	        if ( keyboard.pressed("left") )
 				player.rotation.y += delta;
+				
 			if ( keyboard.pressed("right") )
-				player.rotation.y -= delta;
-			
-			
-			var walkingKeys = ["up", "down", "left", "right"];
-			for (var i = 0; i < walkingKeys.length; i++)
-			{
-				if ( keyboard.pressed(walkingKeys[i]) )
-					walking = true;
-			}
+				player.rotation.y -= delta;	
+				
+				var walkingKeys = ["up", "down", "left", "right"];
+				for (var i = 0; i < walkingKeys.length; i++)
+				{
+					if ( keyboard.pressed(walkingKeys[i]) )
+						walking = true;
+				}
+
+	         
+
+	       
 			
 			camera.position.set(0,
 				player.position.y + 12,
