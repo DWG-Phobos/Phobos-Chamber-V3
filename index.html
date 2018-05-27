@@ -17,10 +17,7 @@
 			var scene = new THREE.Scene(); // Escena
 						
 			var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.5, 1000 );	
-			camera.rotation.y = 180 * Math.PI / 180;
-			camera.rotation.x = 25 * Math.PI / 180;
-			//camera.position.z = 50;
-			//camera.position.y = 10.5;
+			camera.rotation.x = -25 * Math.PI / 180;
 
 			
 			var renderer = new THREE.WebGLRenderer();
@@ -48,7 +45,6 @@
 				
 				player = collada.scene;
 				player.scale.set(0.03,0.03,0.03);
-				player.rotation.y = 180 * Math.PI / 180;
 				
 				var sceneAnimationClip = collada.animations[0];
 				
@@ -376,7 +372,7 @@
 			
 			camera.position.set(0,
 				player.position.y + 11,
-				player.position.z - 13);
+				player.position.z + 13);
 			
 			if( mixer ) {
 				mixer.update( delta );
