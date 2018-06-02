@@ -46,11 +46,12 @@
 				player = collada.scene;
 				player.scale.set(0.03,0.03,0.03);
 				
-				var sceneAnimationClip = collada.animations[0];
-				
+				var sceneAnimationClip = collada.animations[ 0 ];
 				mixer = new THREE.AnimationMixer(player);
 				
-				var sceneAnimation = mixer.clipAction(sceneAnimationClip);
+				var anim_test = THREE.AnimationUtils.subclip( sceneAnimationClip, 'test', 90, 110  )
+				
+				var sceneAnimation = mixer.clipAction(anim_test);
 				sceneAnimation.play();
 			} );
 			
