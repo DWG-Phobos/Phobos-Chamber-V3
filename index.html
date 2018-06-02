@@ -39,6 +39,8 @@
 			var clock = new THREE.Clock(),
 			mixer;
 			var keyboard = new THREEx.KeyboardState();
+			var actions = [];
+			var sceneAnimation;
 
 			loader.options.convertUpAxis = true;
 			loader.load( 'models/Hero_alter/Hero.dae', function ( collada ) {
@@ -49,9 +51,13 @@
 				var sceneAnimationClip = collada.animations[ 0 ];
 				mixer = new THREE.AnimationMixer(player);
 				
-				var anim_test = THREE.AnimationUtils.subclip( sceneAnimationClip, 'test', 90, 110  )
+				var idle = THREE.AnimationUtils.subclip( sceneAnimationClip, 'idle', 0, 89  )
+				var run = THREE.AnimationUtils.subclip( sceneAnimationClip, 'run', 90, 110  )
 				
-				var sceneAnimation = mixer.clipAction(anim_test);
+				actions.push(mixer.clipAction(idle));
+				actions.push(mixer.clipAction(run));
+
+				sceneAnimation = actions[0];
 				sceneAnimation.play();
 			} );
 			
@@ -366,7 +372,21 @@
 			var delta = clock.getDelta();
 			var moveDistance = 10 * delta;
 			walking = false;
-
+			var lastAction = sceneAnimation;
+			if ( keyboard.pressed("down") || keyboard.pressed("up")){
+				if (lastAction == actions[0]){
+					sceneAnimation = actions[1];
+					lastAction.stop();
+					sceneAnimation.fadeIn(0.2).play();
+				}
+			}
+			else{
+				if (lastAction == actions[1]){
+					sceneAnimation = actions[0];
+					lastAction.stop();
+					sceneAnimation.fadeIn(0.2).play();
+				}
+			}
 			//Detector de col·lisions ***************************************************************************************************************
 			dummy.position.x = player.position.x
 			dummy.position.y = player.position.y
