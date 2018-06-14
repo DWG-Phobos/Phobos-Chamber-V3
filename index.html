@@ -41,12 +41,17 @@
 			var keyboard = new THREEx.KeyboardState();
 			var actions = [];
 			var sceneAnimation;
-
+			
+			var ascend = false;
+			var descend = false;
+			var limit = 0;
+			
 			loader.options.convertUpAxis = true;
 			loader.load( 'models/Hero_alter/Hero.dae', function ( collada ) {
 				
 				player = collada.scene;
-				player.scale.set(0.03,0.03,0.03);
+				player.position.set(0,0,10)
+				player.scale.set(0.025,0.025,0.025);
 				
 				var sceneAnimationClip = collada.animations[ 0 ];
 				mixer = new THREE.AnimationMixer(player);
@@ -362,9 +367,14 @@
 			};
 
 			//Col·lisions **********************************
-			var caster = new THREE.Raycaster();
+			var caster1 = new THREE.Raycaster();
+			var caster2 = new THREE.Raycaster();
+			var caster3 = new THREE.Raycaster();
+			var caster4 = new THREE.Raycaster();
+			var caster5 = new THREE.Raycaster();
+			
 			var dummy = new THREE.Object3D();
-			var distance = 3;
+			var distance = 1;
 
 			function update()
 			{
@@ -373,7 +383,7 @@
 			var moveDistance = 10 * delta;
 			walking = false;
 			var lastAction = sceneAnimation;
-			if ( keyboard.pressed("down") || keyboard.pressed("up")){
+			if ( keyboard.pressed("w") || keyboard.pressed("s")){
 				if (lastAction == actions[0]){
 					sceneAnimation = actions[1];
 					lastAction.stop();
@@ -396,44 +406,114 @@
 			dummy.rotation.y = player.rotation.y
 			dummy.rotation.z = player.rotation.z
 			
-			if ( keyboard.pressed("down") )
+			if ( keyboard.pressed("s") )
 				dummy.translateZ( moveDistance )
-			if ( keyboard.pressed("up") )
+			if ( keyboard.pressed("w") )
 				dummy.translateZ( -moveDistance );
-			
-			direccio = new  THREE.Vector3(dummy.position.x, dummy.position.y, dummy.position.z)
-			
-            caster.set(dummy.position, direccio);
-            var collisions = caster.intersectObjects(obstacles);
-           
-            if (!(collisions.length > 0 && collisions[0].distance <= distance)) {
-			
-				if ( keyboard.pressed("down") )
-					player.translateZ( moveDistance )
-				if ( keyboard.pressed("up") )
-					player.translateZ( -moveDistance );
 
+			var matrix = new THREE.Matrix4();
+			matrix.extractRotation( mesh.matrix );
+
+			var direction1 = new THREE.Vector3( 0, 0, -1 );
+			var final_cam_vectorc1 = direction1.applyMatrix4( matrix );
+			
+			var direction2 = new THREE.Vector3( 1, 0, 0 );
+			var final_cam_vectorc2 = direction2.applyMatrix4( matrix );
+			
+			var direction3 = new THREE.Vector3( 0, 0, 1 );
+			var final_cam_vectorc3 = direction3.applyMatrix4( matrix );
+			
+			var direction4 = new THREE.Vector3( -1, 0, 0 );
+			var final_cam_vectorc4 = direction4.applyMatrix4( matrix );
+			
+			var direction5 = new THREE.Vector3( 0, -1, 0 );
+			var final_cam_vectorc5 = direction5.applyMatrix4( matrix );
+
+			
+			//direccio = new  THREE.Vector3(dummy.position.x, dummy.position.y, dummy.position.z)
+			var colisionant = false
+			var surface = false
+			
+            caster1.set(dummy.position, final_cam_vectorc1);
+            var collisions1 = caster1.intersectObjects(obstacles);
+			
+			caster2.set(dummy.position, final_cam_vectorc2);
+            var collisions2 = caster2.intersectObjects(obstacles);
+			
+			caster3.set(dummy.position, final_cam_vectorc3);
+            var collisions3 = caster3.intersectObjects(obstacles);
+			
+			caster4.set(dummy.position, final_cam_vectorc4);
+            var collisions4 = caster4.intersectObjects(obstacles);
+			
+			caster5.set(dummy.position, final_cam_vectorc5);
+            var collisions5 = caster5.intersectObjects(obstacles);
+			
+			console.log(player.position.y)
+
+			
+            if ((collisions1.length > 0 && collisions1[0].distance <= distance)) {
+				colisionant = true;
 	        }
 ;
-			
+            if ((collisions2.length > 0 && collisions2[0].distance <= distance)) {
+				colisionant = true;
+	        }
+;
+            if ((collisions3.length > 0 && collisions3[0].distance <= distance)) {
+				colisionant = true;
+	        }
+;
+            if ((collisions4.length > 0 && collisions4[0].distance <= distance)) {
+				colisionant = true;
+	        }
+;
+            if ((collisions5.length > 0 && collisions5[0].distance <= distance)) {
+				surface = true;
+	        }
+;
 
-			
-	        if ( keyboard.pressed("left") )
+			if (colisionant == false){
+				if ( keyboard.pressed("s") )
+					player.translateZ( moveDistance );
+				if ( keyboard.pressed("w") )
+					player.translateZ( -moveDistance );
+			}
+;		
+	        if ( keyboard.pressed("a") )
 				player.rotation.y += delta;
 				
-			if ( keyboard.pressed("right") )
+			if ( keyboard.pressed("d") )
 				player.rotation.y -= delta;	
 				
-				var walkingKeys = ["up", "down", "left", "right"];
-				for (var i = 0; i < walkingKeys.length; i++)
-				{
-					if ( keyboard.pressed(walkingKeys[i]) )
-						walking = true;
+			if ( keyboard.pressed("space") ){
+				if (ascend == false && descend == false){
+					ascend = true;
 				}
-
-	         
-
-	       
+			}
+			
+			if (ascend == true && descend == false){
+				player.position.y += 0.4
+				limit += 0.2
+			}
+			if (limit >= 5){
+				ascend = false
+				descend = true
+				limit = 0
+			}
+			if (ascend == false && descend == true){
+				player.position.y -= 0.3
+			}
+			if (player.position.y <= 0){
+				player.position.y = 0
+				descend = false
+			}
+			if (surface == true){
+				descend = false
+			}
+			if (colisionant == false && surface == false && player.position.y > 0 && ascend == false){
+				descend = true
+			}
 			
 			camera.position.set(0,
 				player.position.y + 12,
