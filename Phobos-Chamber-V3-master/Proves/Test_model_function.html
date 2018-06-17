@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<script src='js/three.js'></script>
+<script src='js/ColladaLoader.js'></script>
+<script src='js/OrbitControls.js'></script>
+
+</div><body style='margin: 0px; overflow: hidden; text-align:center;'><script>
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
+	// init renderer
+	var renderer	= new THREE.WebGLRenderer({
+		antialias	: true
+	});
+	renderer.setClearColor(new THREE.Color('lightgrey'), 1)
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+
+	// array of functions for the rendering loop
+	var onRenderFcts= [];
+
+	// init scene and camera
+	var scene	= new THREE.Scene();
+	var camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 2000);
+	camera.position.set( 8, 10, 8 );
+	var controls	= new THREE.OrbitControls(camera)
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object in the scene
+	//////////////////////////////////////////////////////////////////////////////////
+		
+	//add a torus	
+	//var geometry	= new THREE.TorusKnotGeometry(0.5-0.12, 0.12);
+	//var material	= new THREE.MeshNormalMaterial(); 
+	//var mesh	= new THREE.Mesh( geometry, material );
+	//scene.add( mesh );
+	
+	load('models/elf/elf.dae',5,0,0);
+	load('models/trooper/stormtrooper.dae',0,0,0);
+	
+	function load(daeLocation,x,y,z){
+		var manager = new THREE.LoadingManager();
+		manager.onProgress = function(item, loaded, total) {
+			console.log(item, loaded, total);
+		};
+
+		var loader = new THREE.ColladaLoader(manager);
+		loader.options.convertUpAxis = true;
+
+		loader.load(daeLocation, function(collada) {
+            dae = collada.scene;
+            dae.position.set(x, y, z); 
+            scene.add(dae);
+            render();
+        }, function(progress) {
+            // show some progress
+    });
+	}
+	
+	
+	/*
+	var loadingManager1 = new THREE.LoadingManager( function() {
+	
+	scene.add( player );
+
+	} );
+	
+	var loader1 = new THREE.ColladaLoader( loadingManager1 );
+	loader1.options.convertUpAxis = true;
+	loader1.load( 'models/trooper/stormtrooper.dae', function ( collada ) {
+	
+		player = collada.scene;
+		player.position.set(10,0,0)
+
+	} );
+	
+	var loadingManager2 = new THREE.LoadingManager( function() {
+
+	scene.add( item );
+
+	} );
+	
+	var loader2 = new THREE.ColladaLoader( loadingManager2 );
+	loader2.options.convertUpAxis = true;
+	loader2.load( 'models/elf/elf.dae', function ( collada ) {
+	
+		item = collada.scene;
+
+	} );
+	*/
+	var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
+	scene.add( ambientLight );
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// handle window resize
+	window.addEventListener('resize', function(){
+		renderer.setSize( window.innerWidth, window.innerHeight )
+		camera.aspect	= window.innerWidth / window.innerHeight
+		camera.updateProjectionMatrix()		
+	}, false)
+
+	// render the scene
+	onRenderFcts.push(function(){
+		renderer.render( scene, camera );
+	})
+	
+	// run the rendering loop
+	var lastTimeMsec= null
+	requestAnimationFrame(function animate(nowMsec){
+		// keep looping
+		requestAnimationFrame( animate );
+		// measure time
+		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+		lastTimeMsec	= nowMsec
+		// call each update function
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(deltaMsec/1000, nowMsec/1000)
+		})
+	})
+</script></body>
