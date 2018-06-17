@@ -1,0 +1,7 @@
+preguntes = '[\
+	{"text": "Hola que tal?", "respostaCorrecta": "0",	"respostes": ["Be", "Malament", "Normal", "WOAJIF"]},\
+	{"text": "Hola que fas?", "respostaCorrecta": "1",	"respostes": ["Res", "Jocs Web", "Normal", "WOAJIF"]},\
+	{"text": "Hola que dius?", "respostaCorrecta": "0",	"respostes": ["Hola", "Soc mut", "Normal", "WOAJIF"]},\
+	{"text": "Hola com estas?", "respostaCorrecta": "0",	"respostes": ["Be", "Malament", "Normal", "WOAJIF"]},\
+	{"text": "Hola com va?", "respostaCorrecta": "0",	"respostes": ["Be", "Malament", "Normal", "WOAJIF"]}\
+]';
