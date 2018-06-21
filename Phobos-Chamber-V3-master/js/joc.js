@@ -240,8 +240,9 @@ function joc() {
 
     //Creating World
 
-    //Creating the ground
+    //Creating the ground, lava and roof
     var groundGeometry = new THREE.PlaneGeometry(20, 800);
+    var hazardGeometry = new THREE.PlaneGeometry(20, 100);
     var roofGeometry = new THREE.PlaneGeometry(20, 800);
     var material1 = new THREE.MeshBasicMaterial({
         color: "red"
@@ -258,6 +259,15 @@ function joc() {
         map: groundTexture
     });
 
+    var hazardWallTexture = THREE.ImageUtils.loadTexture('assets/lava.jpg');
+
+	hazardWallTexture.wrapS = THREE.RepeatWrapping;
+	hazardWallTexture.wrapT = THREE.RepeatWrapping;
+	hazardWallTexture.repeat.set(1, 10);
+	var hazardWallMaterial = new THREE.MeshBasicMaterial({
+		map: hazardWallTexture
+	});
+
     var roofTexture = THREE.ImageUtils.loadTexture('assets/metal.jpg');
 
     roofTexture.wrapS = THREE.RepeatWrapping;
@@ -268,6 +278,7 @@ function joc() {
     });
 
     var ground = new THREE.Mesh(groundGeometry, materialGround);
+    var hazardWall = new THREE.Mesh(hazardGeometry, hazardWallMaterial);
     var roof = new THREE.Mesh(roofGeometry, materialRoof);
 
     //Creating the walls
@@ -292,6 +303,11 @@ function joc() {
     roof.rotation.x = Math.PI / 2;
     roof.position.y = 20;
 
+    //Hazard values
+    hazardWall.rotation.x = -Math.PI / 2;
+	hazardWall.position.z = 100;
+	hazardWall.position.y = 1;
+
     //Right Wall Values
     rightWall.position.x = 10;
     rightWall.position.y = 10;
@@ -309,6 +325,7 @@ function joc() {
 
     mesh.add(roof);
     mesh.add(ground);
+    mesh.add(hazardWall);
 
     var obstacles = [
         cube1,
@@ -406,248 +423,255 @@ function joc() {
     var distance = 1;
 
     function update() {
-        // delta = change in time since last call (seconds)
-        var delta = clock.getDelta();
-        var moveDistance = 10 * delta;
-        walking = false;
-        var lastAction = sceneAnimation;
-        if (keyboard.pressed("w") || keyboard.pressed("s")) {
-            if (lastAction == actions[0]) {
-                sceneAnimation = actions[1];
-                lastAction.stop();
-                sceneAnimation.fadeIn(0.2).play();
-            }
-        } else {
-            if (lastAction == actions[1]) {
-                sceneAnimation = actions[0];
-                lastAction.stop();
-                sceneAnimation.fadeIn(0.2).play();
-            }
-        }
+		
+    	if(hazardWall.position.z  - 50 < player.position.z){
+
+			alert("DIE, MOTHERFUCKER, DIE!");
+
+		}else{
+		
+			//Move hazard wall
+			hazardWall.position.z -= 0.01;
+
+	        // delta = change in time since last call (seconds)
+	        var delta = clock.getDelta();
+	        var moveDistance = 10 * delta;
+	        walking = false;
+	        var lastAction = sceneAnimation;
+	        if (keyboard.pressed("w") || keyboard.pressed("s")) {
+	            if (lastAction == actions[0]) {
+	                sceneAnimation = actions[1];
+	                lastAction.stop();
+	                sceneAnimation.fadeIn(0.2).play();
+	            }
+	        } else {
+	            if (lastAction == actions[1]) {
+	                sceneAnimation = actions[0];
+	                lastAction.stop();
+	                sceneAnimation.fadeIn(0.2).play();
+	            }
+	        }
 
 
-        /*** IMPLEMENTACIÓ CONTROL DE PREGUNTES ***/
-        if (player.position.z < -50 && !respostaSeleccionada) {
-			// Posar els materials de les caixes normals
-			for(var i = 0; i < 4; i++){
-				caixesRespostes[i].material = materials[i].normal;
-			}
+	        /*** IMPLEMENTACIÓ CONTROL DE PREGUNTES ***/
+	        if (player.position.z < -50 && !respostaSeleccionada) {
+				// Posar els materials de les caixes normals
+				for(var i = 0; i < 4; i++){
+					caixesRespostes[i].material = materials[i].normal;
+				}
 
-            if (!preguntaGenerada) {
-                // Si el jugador entra a la zona de preguntes i no s'ha
-                // generat cap resposta obté una pregunta aleatoria i la
-                // mostra juntament amb les seves respostes.
-                // Activa un flag per evitar seguir generant preguntes
-                preguntaGenerada = true;
-                //console.log("Mostrar pregunta");
-                randomIndex = Math.floor((Math.random() * 5));					// Generar un index del vector de preguntes aleatori
-                //console.log(randomIndex);
-                $("#pregunta").html(p[randomIndex].text);						// Modificar el contingut del div per la pregunta
-                //console.log(shuffledArray);
-				// Modificar el contingut del div amb les respostes i el nombre
-                $("#resposta").html("1." + p[randomIndex].respostes[shuffledArray[0]] + "	2." + p[randomIndex].respostes[shuffledArray[1]] + "	3." + p[randomIndex].respostes[shuffledArray[2]] + "	4." + p[randomIndex].respostes[shuffledArray[3]]);
-				// Mostrar les preguntes i les respostes
-				$("#pregunta").show();
-                $("#resposta").show();
-            } else {
-				// El jugador entra a la zona de preguntes però ja s'havia generat una pregunta
-                var opcioSeleccionada = null;
-                var opcioPossible = null;
+	            if (!preguntaGenerada) {
+	                // Si el jugador entra a la zona de preguntes i no s'ha
+	                // generat cap resposta obté una pregunta aleatoria i la
+	                // mostra juntament amb les seves respostes.
+	                // Activa un flag per evitar seguir generant preguntes
+	                preguntaGenerada = true;
+	                //console.log("Mostrar pregunta");
+	                randomIndex = Math.floor((Math.random() * 5));					// Generar un index del vector de preguntes aleatori
+	                //console.log(randomIndex);
+	                $("#pregunta").html(p[randomIndex].text);						// Modificar el contingut del div per la pregunta
+	                //console.log(shuffledArray);
+					// Modificar el contingut del div amb les respostes i el nombre
+	                $("#resposta").html("1." + p[randomIndex].respostes[shuffledArray[0]] + "	2." + p[randomIndex].respostes[shuffledArray[1]] + "	3." + p[randomIndex].respostes[shuffledArray[2]] + "	4." + p[randomIndex].respostes[shuffledArray[3]]);
+					// Mostrar les preguntes i les respostes
+					$("#pregunta").show();
+	                $("#resposta").show();
+	            } else {
+					// El jugador entra a la zona de preguntes però ja s'havia generat una pregunta
+	                var opcioSeleccionada = null;
+	                var opcioPossible = null;
 
-                if (player.position.z < (-57.5) && player.position.z > (-62.5)) {
-					// El jugador està situat en una posició Z dintre de les caixes de espostes
-                    if (player.position.x < (-5) && player.position.x >= (-9)) {
-						// El jugador està situat sobre la esposta 1
-                        console.log("Resposta 1");
-                        opcioPossible = 0;
-                        //console.log(p[randomIndex].respostes[shuffledArray[0]], p[randomIndex].respostaCorrecta);
-                    } else if (player.position.x < (0) && player.position.x >= (-5)) {
-						// El jugador està situat sobre la resposta 2
-                        console.log("Resposta 2");
-                        opcioPossible = 1;
-                        //console.log(p[randomIndex].respostes[shuffledArray[1]], p[randomIndex].respostaCorrecta);
-                    } else if (player.position.x > (0) && player.position.x <= (5)) {
-						// El jugador està situat sobre la resposta 3
-                        console.log("Resposta 3");
-                        opcioPossible = 2;
-                        //console.log(p[randomIndex].respostes[shuffledArray[2]], p[randomIndex].respostaCorrecta);
-                    } else if (player.position.x > (5) && player.position.x <= (9)) {
-						// El jugador està situat sobre la resopsta 4
-                        console.log("Resposta 4");
-                        opcioPossible = 3;
-                        //console.log(p[randomIndex].respostes[shuffledArray[3]], p[randomIndex].respostaCorrecta);
-                    }
-					if(opcioPossible !== null){
-						// El jugador està situat sobre alguna casella de resposta
-						caixesRespostes[opcioPossible].material = materials[opcioPossible].selected;			// Canvia el material de la casella de resposta a casella seleccionada
-					}
+	                if (player.position.z < (-57.5) && player.position.z > (-62.5)) {
+						// El jugador està situat en una posició Z dintre de les caixes de espostes
+	                    if (player.position.x < (-5) && player.position.x >= (-9)) {
+							// El jugador està situat sobre la esposta 1
+	                        console.log("Resposta 1");
+	                        opcioPossible = 0;
+	                        //console.log(p[randomIndex].respostes[shuffledArray[0]], p[randomIndex].respostaCorrecta);
+	                    } else if (player.position.x < (0) && player.position.x >= (-5)) {
+							// El jugador està situat sobre la resposta 2
+	                        console.log("Resposta 2");
+	                        opcioPossible = 1;
+	                        //console.log(p[randomIndex].respostes[shuffledArray[1]], p[randomIndex].respostaCorrecta);
+	                    } else if (player.position.x > (0) && player.position.x <= (5)) {
+							// El jugador està situat sobre la resposta 3
+	                        console.log("Resposta 3");
+	                        opcioPossible = 2;
+	                        //console.log(p[randomIndex].respostes[shuffledArray[2]], p[randomIndex].respostaCorrecta);
+	                    } else if (player.position.x > (5) && player.position.x <= (9)) {
+							// El jugador està situat sobre la resopsta 4
+	                        console.log("Resposta 4");
+	                        opcioPossible = 3;
+	                        //console.log(p[randomIndex].respostes[shuffledArray[3]], p[randomIndex].respostaCorrecta);
+	                    }
+						if(opcioPossible !== null){
+							// El jugador està situat sobre alguna casella de resposta
+							caixesRespostes[opcioPossible].material = materials[opcioPossible].selected;			// Canvia el material de la casella de resposta a casella seleccionada
+						}
 
-                    // PREMER BOTÓ PER CONTESTAR PREGUNTA
-                    if (keyboard.pressed("enter") && preguntaGenerada) {
-                        console.log("Resposta seleccionada", player.position.x, player.position.y, player.position.z)
-                        if (!respostaSeleccionada && opcioPossible !== null) {
-							// no s'ha seleccionat cap resposta i el jugador està sobre alguna casella
-                            opcioSeleccionada = opcioPossible;					// Opcio seleccionada passa a valdre l'opció de la casella on està el jugador al premer enter
-                            respostaSeleccionada = true;
-                            if (shuffledArray[opcioSeleccionada] == p[randomIndex].respostaCorrecta) {
-								// Comprovar que la resposta sigui correcta
-                                console.log("CORRECTE");
-                                $("#missatge").html("Resposta correcta, has guanyat!");			// Modificar div
-                            } else {
-                                console.log("INCORRECTE");
-								// Si falla buscar la resposta correcta i marcar-la
-                                for (var i = 0; i < shuffledArray.length; i++) {
-                                    if (shuffledArray[i] == p[randomIndex].respostaCorrecta) {
-										caixesRespostes[i].material = materials[i].correct;				// Canvia el material de la casella correcta pel material de correcta
-                                    }
-                                }
-                                $("#missatge").html("Resposta incorrecta, has perdut! <br> La resposta correcta era: " + p[randomIndex].respostes[p[randomIndex].respostaCorrecta]);
-                            }
-                            $("#pregunta").hide();
-                        }
-                    }
-                }
-                if (respostaSeleccionada) {
-                    $("#resposta").hide();
-                    $("#missatge").show();
-                } else {
-                    $("#pregunta").show();
-                    $("#resposta").show();
-                }
-            }
-        } else {
-            //if(player.position.z > -50 && preguntaGenerada){
-            // Si el jugador surt de la zona de preguntes
-            // amaga l'enunciat i les respostes, però manté
-            // la mateixa pregunta
-            $("#pregunta").hide();
-            $("#resposta").hide();
-        }
-
-
-        //Detector de col·lisions ***************************************************************************************************************
-        dummy.position.x = player.position.x
-        dummy.position.y = player.position.y
-        dummy.position.z = player.position.z
-
-        dummy.rotation.x = player.rotation.x
-        dummy.rotation.y = player.rotation.y
-        dummy.rotation.z = player.rotation.z
-
-        if (keyboard.pressed("s"))
-            dummy.translateZ(moveDistance)
-        if (keyboard.pressed("w"))
-            dummy.translateZ(-moveDistance);
-
-        var matrix = new THREE.Matrix4();
-        matrix.extractRotation(mesh.matrix);
-
-        var direction1 = new THREE.Vector3(0, 0, -1);
-        var final_cam_vectorc1 = direction1.applyMatrix4(matrix);
-
-        var direction2 = new THREE.Vector3(1, 0, 0);
-        var final_cam_vectorc2 = direction2.applyMatrix4(matrix);
-
-        var direction3 = new THREE.Vector3(0, 0, 1);
-        var final_cam_vectorc3 = direction3.applyMatrix4(matrix);
-
-        var direction4 = new THREE.Vector3(-1, 0, 0);
-        var final_cam_vectorc4 = direction4.applyMatrix4(matrix);
-
-        var direction5 = new THREE.Vector3(0, -1, 0);
-        var final_cam_vectorc5 = direction5.applyMatrix4(matrix);
+	                    // PREMER BOTÓ PER CONTESTAR PREGUNTA
+	                    if (keyboard.pressed("enter") && preguntaGenerada) {
+	                        console.log("Resposta seleccionada", player.position.x, player.position.y, player.position.z)
+	                        if (!respostaSeleccionada && opcioPossible !== null) {
+								// no s'ha seleccionat cap resposta i el jugador està sobre alguna casella
+	                            opcioSeleccionada = opcioPossible;					// Opcio seleccionada passa a valdre l'opció de la casella on està el jugador al premer enter
+	                            respostaSeleccionada = true;
+	                            if (shuffledArray[opcioSeleccionada] == p[randomIndex].respostaCorrecta) {
+									// Comprovar que la resposta sigui correcta
+	                                console.log("CORRECTE");
+	                                $("#missatge").html("Resposta correcta, has guanyat!");			// Modificar div
+	                            } else {
+	                                console.log("INCORRECTE");
+									// Si falla buscar la resposta correcta i marcar-la
+	                                for (var i = 0; i < shuffledArray.length; i++) {
+	                                    if (shuffledArray[i] == p[randomIndex].respostaCorrecta) {
+											caixesRespostes[i].material = materials[i].correct;				// Canvia el material de la casella correcta pel material de correcta
+	                                    }
+	                                }
+	                                $("#missatge").html("Resposta incorrecta, has perdut! <br> La resposta correcta era: " + p[randomIndex].respostes[p[randomIndex].respostaCorrecta]);
+	                            }
+	                            $("#pregunta").hide();
+	                        }
+	                    }
+	                }
+	                if (respostaSeleccionada) {
+	                    $("#resposta").hide();
+	                    $("#missatge").show();
+	                } else {
+	                    $("#pregunta").show();
+	                    $("#resposta").show();
+	                }
+	            }
+	        } else {
+	            //if(player.position.z > -50 && preguntaGenerada){
+	            // Si el jugador surt de la zona de preguntes
+	            // amaga l'enunciat i les respostes, però manté
+	            // la mateixa pregunta
+	            $("#pregunta").hide();
+	            $("#resposta").hide();
+	        }
 
 
-        //direccio = new  THREE.Vector3(dummy.position.x, dummy.position.y, dummy.position.z)
-        var colisionant = false
-        var surface = false
+	        //Detector de col·lisions ***************************************************************************************************************
+	        dummy.position.x = player.position.x
+	        dummy.position.y = player.position.y
+	        dummy.position.z = player.position.z
 
-        caster1.set(dummy.position, final_cam_vectorc1);
-        var collisions1 = caster1.intersectObjects(obstacles);
+	        dummy.rotation.x = player.rotation.x
+	        dummy.rotation.y = player.rotation.y
+	        dummy.rotation.z = player.rotation.z
 
-        caster2.set(dummy.position, final_cam_vectorc2);
-        var collisions2 = caster2.intersectObjects(obstacles);
+	        if (keyboard.pressed("s"))
+	            dummy.translateZ(moveDistance)
+	        if (keyboard.pressed("w"))
+	            dummy.translateZ(-moveDistance);
 
-        caster3.set(dummy.position, final_cam_vectorc3);
-        var collisions3 = caster3.intersectObjects(obstacles);
+	        var matrix = new THREE.Matrix4();
+	        matrix.extractRotation(mesh.matrix);
 
-        caster4.set(dummy.position, final_cam_vectorc4);
-        var collisions4 = caster4.intersectObjects(obstacles);
+	        var direction1 = new THREE.Vector3(0, 0, -1);
+	        var final_cam_vectorc1 = direction1.applyMatrix4(matrix);
 
-        caster5.set(dummy.position, final_cam_vectorc5);
-        var collisions5 = caster5.intersectObjects(obstacles);
+	        var direction2 = new THREE.Vector3(1, 0, 0);
+	        var final_cam_vectorc2 = direction2.applyMatrix4(matrix);
 
-        console.log(player.position.y)
+	        var direction3 = new THREE.Vector3(0, 0, 1);
+	        var final_cam_vectorc3 = direction3.applyMatrix4(matrix);
 
+	        var direction4 = new THREE.Vector3(-1, 0, 0);
+	        var final_cam_vectorc4 = direction4.applyMatrix4(matrix);
 
-        if ((collisions1.length > 0 && collisions1[0].distance <= distance)) {
-            colisionant = true;
-        };
-        if ((collisions2.length > 0 && collisions2[0].distance <= distance)) {
-            colisionant = true;
-        };
-        if ((collisions3.length > 0 && collisions3[0].distance <= distance)) {
-            colisionant = true;
-        };
-        if ((collisions4.length > 0 && collisions4[0].distance <= distance)) {
-            colisionant = true;
-        };
-        if ((collisions5.length > 0 && collisions5[0].distance <= distance)) {
-            surface = true;
-        };
-
-        if (colisionant == false) {
-            if (keyboard.pressed("s"))
-                player.translateZ(moveDistance);
-            if (keyboard.pressed("w"))
-                player.translateZ(-moveDistance);
-        };
-        if (keyboard.pressed("a"))
-            player.rotation.y += delta;
-
-        if (keyboard.pressed("d"))
-            player.rotation.y -= delta;
-
-        if (keyboard.pressed("space")) {
-            if (ascend == false && descend == false) {
-                ascend = true;
-            }
-        }
-
-        if (ascend == true && descend == false) {
-            player.position.y += 0.4
-            limit += 0.2
-        }
-        if (limit >= 5) {
-            ascend = false
-            descend = true
-            limit = 0
-        }
-        if (ascend == false && descend == true) {
-            player.position.y -= 0.3
-        }
-        if (player.position.y <= 0) {
-            player.position.y = 0
-            descend = false
-        }
-        if (surface == true) {
-            descend = false
-        }
-        if (colisionant == false && surface == false && player.position.y > 0 && ascend == false) {
-            descend = true
-        }
-
-        camera.position.set(0,
-            player.position.y + 12,
-            player.position.z + 15);
-
-        if (mixer) {
-            mixer.update(delta);
-        }
+	        var direction5 = new THREE.Vector3(0, -1, 0);
+	        var final_cam_vectorc5 = direction5.applyMatrix4(matrix);
 
 
+	        //direccio = new  THREE.Vector3(dummy.position.x, dummy.position.y, dummy.position.z)
+	        var colisionant = false
+	        var surface = false
+
+	        caster1.set(dummy.position, final_cam_vectorc1);
+	        var collisions1 = caster1.intersectObjects(obstacles);
+
+	        caster2.set(dummy.position, final_cam_vectorc2);
+	        var collisions2 = caster2.intersectObjects(obstacles);
+
+	        caster3.set(dummy.position, final_cam_vectorc3);
+	        var collisions3 = caster3.intersectObjects(obstacles);
+
+	        caster4.set(dummy.position, final_cam_vectorc4);
+	        var collisions4 = caster4.intersectObjects(obstacles);
+
+	        caster5.set(dummy.position, final_cam_vectorc5);
+	        var collisions5 = caster5.intersectObjects(obstacles);
+
+	        console.log(player.position.y)
 
 
+	        if ((collisions1.length > 0 && collisions1[0].distance <= distance)) {
+	            colisionant = true;
+	        };
+	        if ((collisions2.length > 0 && collisions2[0].distance <= distance)) {
+	            colisionant = true;
+	        };
+	        if ((collisions3.length > 0 && collisions3[0].distance <= distance)) {
+	            colisionant = true;
+	        };
+	        if ((collisions4.length > 0 && collisions4[0].distance <= distance)) {
+	            colisionant = true;
+	        };
+	        if ((collisions5.length > 0 && collisions5[0].distance <= distance)) {
+	            surface = true;
+	        };
+
+	        if (colisionant == false) {
+	            if (keyboard.pressed("s"))
+	                player.translateZ(moveDistance);
+	            if (keyboard.pressed("w"))
+	                player.translateZ(-moveDistance);
+	        };
+	        if (keyboard.pressed("a"))
+	            player.rotation.y += delta;
+
+	        if (keyboard.pressed("d"))
+	            player.rotation.y -= delta;
+
+	        if (keyboard.pressed("space")) {
+	            if (ascend == false && descend == false) {
+	                ascend = true;
+	            }
+	        }
+
+	        if (ascend == true && descend == false) {
+	            player.position.y += 0.4
+	            limit += 0.2
+	        }
+	        if (limit >= 5) {
+	            ascend = false
+	            descend = true
+	            limit = 0
+	        }
+	        if (ascend == false && descend == true) {
+	            player.position.y -= 0.3
+	        }
+	        if (player.position.y <= 0) {
+	            player.position.y = 0
+	            descend = false
+	        }
+	        if (surface == true) {
+	            descend = false
+	        }
+	        if (colisionant == false && surface == false && player.position.y > 0 && ascend == false) {
+	            descend = true
+	        }
+
+	        camera.position.set(0,
+	            player.position.y + 12,
+	            player.position.z + 15);
+
+	        if (mixer) {
+	            mixer.update(delta);
+	        }
+	    }
     }
 
     animate();
