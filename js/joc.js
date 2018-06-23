@@ -412,7 +412,7 @@ function joc() {
 	        // delta = change in time since last call (seconds)
 	        var delta = clock.getDelta();
 	        var moveDistance = 10 * delta;
-	        walking = false;
+			
 	        var lastAction = sceneAnimation;
 	        if (keyboard.pressed("w") || keyboard.pressed("s")) {
 	            if (lastAction == actions[0]) {

@@ -13,7 +13,6 @@
 				background: url('assets/background.jpg') no-repeat center center;
 				background-size: repeat;
 				color: #fff;
-				-webkit-text-fill-color: transparent;
 				-webkit-background-clip: text;
 
 				position: absolute;
@@ -30,7 +29,6 @@
 				background: url('assets/background.jpg') no-repeat center center;
 				background-size: repeat;
 				color: #fff;
-				-webkit-text-fill-color: transparent;
 				-webkit-background-clip: text;
 				
 				position: absolute;
@@ -47,7 +45,6 @@
 				background: url('assets/background.jpg') no-repeat center center;
 				background-size: repeat;
 				color: #fff;
-				-webkit-text-fill-color: transparent;
 				-webkit-background-clip: text;
 				
 				position: absolute;
