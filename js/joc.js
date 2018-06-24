@@ -473,7 +473,6 @@ function joc() {
 	                    // ANSWERING QUESTIONS
 						// When the player presses enter, depending on his choice the following outcomes may happen
 	                    if (keyboard.pressed("enter") && preguntaGenerada) {
-	                        console.log("Resposta seleccionada", player.position.x, player.position.y, player.position.z)
 	                        if (!respostaSeleccionada && opcioPossible !== null) {
 								// The player is not in a valid answering place
 	                            opcioSeleccionada = opcioPossible;	
@@ -481,9 +480,7 @@ function joc() {
 	                            if (shuffledArray[opcioSeleccionada] == p[randomIndex].respostaCorrecta) {
 									// The answer is right, the player wins
 									ongoing = false
-									victory = true
-	                               // $("#missatge").html("Resposta correcta, has guanyat!");	
-									
+									victory = true									
 	                            } else {
 									// Wrong answer, player loses
 	                                for (var i = 0; i < shuffledArray.length; i++) {
@@ -637,7 +634,7 @@ function joc() {
 	    }
     }
 		else if (victory == false && question_failed == true){	//Player has answer poorly
-			$("#missatge").html("Resposta incorrecta, has perdut! <br> La resposta correcta era: " + p[randomIndex].respostes[p[randomIndex].respostaCorrecta]);	
+			$("#missatge").html("You chose poorly, you lose! <br> The correct answer was: " + p[randomIndex].respostes[p[randomIndex].respostaCorrecta]);	
 		}
 		else if (victory == false){		//Player has been caught up by the hazard
 			$("#missatge").show();

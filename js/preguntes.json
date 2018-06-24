@@ -1,7 +1,7 @@
 preguntes = '[\
-	{"text": "Hola que tal?", "respostaCorrecta": "0",	"respostes": ["Be", "Malament", "Normal", "WOAJIF"]},\
-	{"text": "Hola que fas?", "respostaCorrecta": "1",	"respostes": ["Res", "Jocs Web", "Normal", "WOAJIF"]},\
-	{"text": "Hola que dius?", "respostaCorrecta": "0",	"respostes": ["Hola", "Soc mut", "Normal", "WOAJIF"]},\
-	{"text": "Hola com estas?", "respostaCorrecta": "0",	"respostes": ["Be", "Malament", "Normal", "WOAJIF"]},\
-	{"text": "Hola com va?", "respostaCorrecta": "0",	"respostes": ["Be", "Malament", "Normal", "WOAJIF"]}\
+	{"text": "Which game company employed Hideo Kojima", "respostaCorrecta": "2",	"respostes": ["Kojima Productions", "Konami", "SONY", "Microsoft"]},\
+	{"text": "What is the name of Hideo Kojima most recent game?", "respostaCorrecta": "1",	"respostes": ["Metal Gear Solid 5", "Death Stranding", "Parodius", "Suikoden"]},\
+	{"text": "Which Manga artist was suposed to work on the canceled Silent Hills?", "respostaCorrecta": "1",	"respostes": ["Hirohiko Araki", "Junji Ito", "Akira Toriyama", "Kentaro Miura"]},\
+	{"text": "What was the codename of the nintendo Switch?", "respostaCorrecta": "0",	"respostes": ["NX", "Dolphin", "AZ", "Panther"]},\
+	{"text": "Which of this games still come out on the nintendo Wii?", "respostaCorrecta": "0",	"respostes": ["Just Dance", "Call of duty", "Battlefield", "Mario Party"]}\
 ]';
